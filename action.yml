@@ -1,0 +1,45 @@
+name: 'Specific helmfile linter'
+description: 'This action validate all environments in a helmfile with sops secret'
+inputs:
+  docker-build-args:
+    description: 'The docker build args without -t'
+    required: true
+  docker-image-name:
+    description: 'The docker image name'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    -
+      name: Build an image from Dockerfile
+      run: |
+         docker build ${{ inputs.docker-build-args }} -t ${{ inputs.docker-image-name }} .
+      shell: bash
+    -
+      name: Get Date
+      id: get-date
+      run: |
+        echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
+      shell: bash
+    -
+      uses: actions/cache@v4
+      with:
+        path: trivy
+        key: ${{ steps.get-date.outputs.date }}
+        save-always: true
+    -
+      name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@0.20.0
+      with:
+        image-ref: "${{ inputs.docker-image-name }}"
+        format: 'table'
+        exit-code: '1'
+        vuln-type: 'os,library'
+        severity: 'CRITICAL,HIGH'
+        cache-dir: trivy
+    -
+      name: Fix trivy cache folder permission
+      if: always()
+      run: |
+        sudo chown -R $DOCKER_USER trivy
+      shell: bash
