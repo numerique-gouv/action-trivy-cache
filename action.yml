@@ -29,7 +29,7 @@ runs:
         save-always: true
     -
       name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@0.20.0
+      uses: aquasecurity/trivy-action@0.29.0
       with:
         image-ref: "${{ inputs.docker-image-name }}"
         format: 'table'
