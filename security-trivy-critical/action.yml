@@ -1,0 +1,22 @@
+name: 'Security Trivy Critical Scan'
+description: 'Runs Trivy to scan for critical vulnerabilities and uploads results to GitHub Security tab (will not fail).'
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8
+      with:
+        scan-type: 'fs'
+        ignore-unfixed: true
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        severity: 'CRITICAL'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@fe4161a26a8629af62121b670040955b330f9af2
+      with:
+        sarif_file: 'trivy-results.sarif'
+
