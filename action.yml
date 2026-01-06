@@ -7,13 +7,17 @@ inputs:
   docker-image-name:
     description: 'The docker image name'
     required: true
+  docker-context:
+    description: 'The docker build context path'
+    required: false
+    default: '.'
 runs:
   using: "composite"
   steps:
     -
       name: Build an image from Dockerfile
       run: |
-         docker build ${{ inputs.docker-build-args }} -t ${{ inputs.docker-image-name }} .
+         docker build ${{ inputs.docker-build-args }} -t ${{ inputs.docker-image-name }} ${{ inputs.docker-context }}
       shell: bash
     -
       name: Get Date
