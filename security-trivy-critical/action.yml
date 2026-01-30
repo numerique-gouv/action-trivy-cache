@@ -1,5 +1,10 @@
 name: 'Security Trivy Critical Scan'
 description: 'Runs Trivy to scan for critical vulnerabilities and uploads results to GitHub Security tab (will not fail).'
+inputs:
+  skip-files:
+    description: 'Comma-separated list of file paths to skip in Trivy scan.'
+    required: false
+    default: ''
 runs:
   using: "composite"
   steps:
@@ -14,9 +19,9 @@ runs:
         format: 'sarif'
         output: 'trivy-results.sarif'
         severity: 'CRITICAL'
+        skip-files: ${{ inputs.skip-files }}
 
     - name: Upload Trivy scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@fe4161a26a8629af62121b670040955b330f9af2
       with:
         sarif_file: 'trivy-results.sarif'
-

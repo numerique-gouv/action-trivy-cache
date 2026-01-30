@@ -1,5 +1,10 @@
 name: 'Security Trivy Scan'
 description: 'Runs Trivy to scan for high and critical vulnerabilities and will fail on detection.'
+inputs:
+  skip-files:
+    description: 'Comma-separated list of file paths to skip in Trivy scan.'
+    required: false
+    default: ''
 runs:
   using: "composite"
   steps:
@@ -14,4 +19,5 @@ runs:
         scan-ref: .
         severity: HIGH,CRITICAL
         exit-code: 1
+        skip-files: ${{ inputs.skip-files }}
 
