@@ -5,6 +5,10 @@ inputs:
     description: 'Comma-separated list of file paths to skip in Trivy scan.'
     required: false
     default: ''
+  trivyignores:
+    description: 'Comma-separated list of .trivyignore files to use'
+    required: false
+    default: ''
 runs:
   using: "composite"
   steps:
@@ -20,6 +24,7 @@ runs:
         output: 'trivy-results.sarif'
         severity: 'CRITICAL'
         skip-files: ${{ inputs.skip-files }}
+        trivyignores: ${{ inputs.trivyignores }}
 
     - name: Upload Trivy scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@fe4161a26a8629af62121b670040955b330f9af2

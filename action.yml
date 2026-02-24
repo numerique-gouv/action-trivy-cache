@@ -11,6 +11,10 @@ inputs:
     description: 'The docker build context path'
     required: false
     default: '.'
+  trivyignores:
+    description: 'Comma-separated list of .trivyignore files to use'
+    required: false
+    default: ''
 runs:
   using: "composite"
   steps:
@@ -41,6 +45,7 @@ runs:
         vuln-type: 'os,library'
         severity: 'CRITICAL,HIGH'
         cache-dir: trivy
+        trivyignores: ${{ inputs.trivyignores }}
     -
       name: Fix trivy cache folder permission
       if: always()
