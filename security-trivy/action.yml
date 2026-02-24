@@ -5,6 +5,10 @@ inputs:
     description: 'Comma-separated list of file paths to skip in Trivy scan.'
     required: false
     default: ''
+  trivyignores:
+    description: 'Comma-separated list of .trivyignore files to use'
+    required: false
+    default: ''
 runs:
   using: "composite"
   steps:
@@ -20,4 +24,5 @@ runs:
         severity: HIGH,CRITICAL
         exit-code: 1
         skip-files: ${{ inputs.skip-files }}
+        trivyignores: ${{ inputs.trivyignores }}
 
